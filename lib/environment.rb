@@ -5,7 +5,9 @@ require 'rubygems'
 require 'bundler/setup'
 Bundler.require('development')
 
+require 'active_support'
 require 'active_support/logger'
+require 'active_support/core_ext'
 
 # App environment boilerplate code
 class Environment

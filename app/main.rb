@@ -4,29 +4,35 @@ require 'octokit'
 
 class Main
   attr_accessor :token
+  attr_reader :login
 
-  def initialize(token)
+  def initialize(token, repos = nil, login = nil)
     @token = token
+    @client = Octokit::Client.new(access_token: @token, auto_paginate: true)
 
-    @repos = ['tricycle/bellroy']
-    @client = Octokit::Client.new(access_token: @token)
+    @login = login || @client.login
+    @repos = repos || @client.repos.map(&:full_name)
   end
 
   def pull_requests
     @repos.flat_map do |repo|
+      # TODO: remove
+      puts "PR for #{repo}"
       @client
-        .pull_requests(repo, state: 'all')
+        .pull_requests(repo, state: 'open')
         .select { |key, _| key[:user][:login] == login }
     end
   end
 
-  def questions
-    Questions.new(@client, @repos, pull_requests)
+  def open_pull_requests
+    @repos.flat_map do |repo|
+      @client
+        .pull_requests(repo, state: 'open')
+        .select { |key, _| key[:user][:login] == login }
+    end
   end
 
-  private
-
-  def login
-    @client.login
+  def questionnaire
+    Questionnaire.new(@client, @repos, open_pull_requests)
   end
 end
