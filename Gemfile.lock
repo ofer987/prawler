@@ -10,8 +10,8 @@ PATH
   remote: .
   specs:
     prawler (0.1.0)
-      activesupport
-      octokit
+      activesupport (~> 5.0)
+      octokit (~> 4.6)
 
 GEM
   remote: https://rubygems.org/

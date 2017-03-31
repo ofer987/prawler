@@ -5,11 +5,12 @@ module Prawler
     attr_reader :pull_requests
     alias to_a pull_requests
 
-    def initialize(client, repos, pull_requests)
+    def initialize(client, repos, login, pull_requests)
       @client = client
-      @repos = Array(repos).map(&:to_s)
+      @repos = repos
+      @login = login
 
-      @pull_requests = pull_requests
+      @pull_requests = Array(pull_requests)
     end
 
     def find_by_number(number)
@@ -18,15 +19,25 @@ module Prawler
       end
     end
 
+    def open_pull_requests
+      new_questionnaire do
+        @repos.flat_map do |repo|
+          @client
+            .pull_requests(repo, state: 'open')
+            .select { |key, _| key[:user][:login] == @login }
+        end
+      end
+    end
+
     def approved_reviews
       new_questionnaire do
         @pull_requests.select do |pr|
           @client
             .pull_request_reviews(
-          pr.base.repo.full_name,
-          pr.number,
-          accept: 'application/vnd.github.black-cat-preview+json'
-          ).any? { |review| review.state == 'APPROVED' }
+              pr.base.repo.full_name,
+              pr.number,
+              accept: 'application/vnd.github.black-cat-preview+json'
+            ).any? { |review| review.state == 'APPROVED' }
         end
       end
     end
@@ -37,15 +48,19 @@ module Prawler
       new_pull_requests =
         begin
           yield
+        rescue Faraday::ConnectionFailed => ex
+          puts 'Are you connected to the internet?'
+          puts 'Is your token valid?'
+          puts ex
+
+          []
         rescue => ex
-          puts 'Error!'
-          puts 'Do you have internet connection?'
           puts ex
 
           []
         end
 
-      self.class.new(@client, @repos, new_pull_requests)
+      self.class.new(@client, @repos, @login, new_pull_requests)
     end
   end
 end
