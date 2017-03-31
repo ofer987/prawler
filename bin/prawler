@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+
+repos = (ENV['REPOS'] || '').split(',').map(&:strip)
+repos = repos.present? ? repos : nil
+
+login = (ENV['LOGIN'] || '').strip
+login = login.present? ? login : nil
+
+values = {}
+options = OptionParser.new do |opts|
+  opts.banner = 'Usage prawler [options]'
+
+  opts.on('-a', '--approved', 'only approved pull requests') do |v|
+    values[:approved] = v
+  end
+end
+options.parse!
+
+questions = Main
+  .new(ENV['TOKEN'], repos, login)
+  .questionnaire
+
+questions = questions.approved_reviews if values.fetch(:approved, false)
+
+questions
+  .pull_requests
+  .each { |pr| puts pr.html_url }

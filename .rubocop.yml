@@ -1,0 +1,49 @@
+---
+Documentation:
+  Enabled: false
+Rails:
+  Enabled: true
+AllCops:
+  Include:
+  - app/**/*.rb
+  - lib/**/*.rb
+  - spec/**/*.rb
+  Exclude:
+  - app/assets/**/*
+  - bin/**/*
+  - client/node_modules/**/*
+  - config/**/*
+  - coverage/**/*
+  - data/**/*
+  - db/**/*
+  - db_*/**/*
+  - log/**/*
+  - phrase/**/*
+  - public/**/*
+  - tmp/**/*
+  - vendor/**/*
+  TargetRubyVersion: 2.3
+Metrics/LineLength:
+  Max: 100
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    "%w": "[]"
+RSpec/ExampleLength:
+  Enabled: false
+  Max: 10
+RSpec/MultipleExpectations:
+  Enabled: false
+  Max: 10
+RSpec/NestedGroups:
+  Enabled: false
+  Max: 10
+RSpec/MessageExpectation:
+  Enabled: false
+require:
+- rubocop-rspec
+Metrics/BlockLength:
+  Enabled: false
+RSpec/MessageSpies:
+  Enabled: false
