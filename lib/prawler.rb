@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
+module Prawler
+end
+
 require 'active_support'
 require 'active_support/logger'
 require 'active_support/core_ext'
 
-require_relative 'prawler/version'
-
-module Prawler
-  require_relative 'prawler/main'
-  require_relative 'prawler/questionnaire'
-end
+require 'prawler/version'
+require 'prawler/application'
+require 'prawler/questionnaire'

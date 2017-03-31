@@ -3,6 +3,10 @@
 
 require 'optparse'
 
+require 'prawler'
+# require 'pry-byebug'
+# binding.pry
+
 repos = (ENV['REPOS'] || '').split(',').map(&:strip)
 repos = repos.present? ? repos : nil
 
@@ -19,7 +23,7 @@ options = OptionParser.new do |opts|
 end
 options.parse!
 
-questions = Main
+questions = Prawler::Application
   .new(ENV['TOKEN'], repos, login)
   .questionnaire
 
