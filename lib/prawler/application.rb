@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'octokit'
-
 module Prawler
   class Application
     attr_accessor :token
@@ -22,9 +20,9 @@ module Prawler
     private
 
     def remotes
-      cli = Git::Cli.new
+      cli = Prawler::Git::Cli.new
 
-      Git::Config(cli).remotes
+      Prawler::Git::Config(cli).remotes
     end
   end
 end
