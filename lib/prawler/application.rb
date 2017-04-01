@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+require 'octokit'
+
+require 'prawler/git/cli'
+require 'prawler/git/config'
+
 module Prawler
   class Application
     attr_accessor :token
