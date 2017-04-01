@@ -12,11 +12,19 @@ module Prawler
       @client = Octokit::Client.new(access_token: @token, auto_paginate: true)
 
       @login = login || @client.login
-      @repos = repos || @client.repos.map(&:full_name)
+      @repos = repos || remotes
     end
 
     def questionnaire
       Questionnaire.new(@client, @repos, @login, nil)
+    end
+
+    private
+
+    def remotes
+      cli = Git::Cli.new
+
+      Git::Config(cli).remotes
     end
   end
 end
