@@ -4,8 +4,6 @@
 require 'optparse'
 
 require 'prawler'
-# require 'pry-byebug'
-# binding.pry
 
 repos = (ENV['REPOS'] || '').split(',').map(&:strip)
 repos = repos.present? ? repos : nil
@@ -20,15 +18,26 @@ options = OptionParser.new do |opts|
   opts.on('-a', '--approved', 'only approved pull requests') do |v|
     values[:approved] = v
   end
+
+  opts.on('-v', '--verbose', 'useful information') do |v|
+    values[:verbose] = v
+  end
 end
 options.parse!
 
 questions = Prawler::Application
-  .new(ENV['TOKEN'], repos, login)
+  .new(repos, login)
   .questionnaire
+  .open_pull_requests
 
 questions = questions.approved_reviews if values.fetch(:approved, false)
 
-questions
-  .pull_requests
-  .each { |pr| puts pr.html_url }
+if values.fetch(:verbose, false)
+  questions
+    .to_a
+    .each { |pr| puts "#{pr.number} | #{pr.title} | state = #{pr.state} | #{pr.html_url}" }
+else
+  questions
+    .to_a
+    .each { |pr| puts pr.html_url }
+end

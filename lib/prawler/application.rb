@@ -7,12 +7,12 @@ require 'prawler/git/config'
 
 module Prawler
   class Application
-    attr_accessor :token
     attr_reader :login
 
-    def initialize(token, repos = nil, login = nil)
-      @token = token
-      @client = Octokit::Client.new(access_token: @token, auto_paginate: true)
+    def initialize(repos = nil, login = nil)
+      # binding.pry
+      # what if token not valid?
+      @client = Octokit::Client.new(access_token: token, auto_paginate: true)
 
       @login = login || @client.login
       @repos = repos || remotes
@@ -25,9 +25,15 @@ module Prawler
     private
 
     def remotes
-      cli = Prawler::Git::Cli.new
+      git_config.remotes
+    end
 
-      Prawler::Git::Config(cli).remotes
+    def token
+      git_config.prawler_token
+    end
+
+    def git_config
+      @git_config ||= Git::Config.new(Git::Cli.new)
     end
   end
 end

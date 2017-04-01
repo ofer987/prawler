@@ -17,6 +17,16 @@ module Prawler
           .map { |line| line.gsub(/\.git$/, '') }
           .uniq
       end
+
+      def prawler_token
+        @cli
+          .config_list
+          .split("\n")
+          .select { |line| line =~ /^prawler\.token/ }
+          .first
+          .strip
+          .gsub(/prawler\.token=/, '')
+      end
     end
   end
 end

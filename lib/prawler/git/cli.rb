@@ -6,6 +6,10 @@ module Prawler
       def remotes
         `git remote -v`
       end
+
+      def config_list
+        `git config --list`
+      end
     end
   end
 end
