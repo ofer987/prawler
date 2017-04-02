@@ -10,7 +10,6 @@ module Prawler
     attr_reader :login
 
     def initialize(repos = nil, login = nil)
-      # binding.pry
       # what if token not valid?
       @client = Octokit::Client.new(access_token: token, auto_paginate: true)
 
